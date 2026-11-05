@@ -2,13 +2,14 @@ import { useState, type ChangeEvent } from 'react'
 import { scheduleFCFS } from '../algorithms/fcfs'
 import { scheduleRoundRobin } from '../algorithms/roundRobin'
 import { scheduleSJF } from '../algorithms/sjf'
-import type { Algorithm, ScheduleResult } from '../types/scheduling'
+import type { Algorithm, ProcessInput, ScheduleResult } from '../types/scheduling'
 import { parseProcessCsv } from '../validation/csvParser'
 import {
   type ProcessDraft,
   validateProcesses,
   validateQuantum,
 } from '../validation/processValidation'
+import { ScheduleResults } from './ScheduleResults'
 
 type WorkspaceProps = {
   algorithm: Algorithm
@@ -41,6 +42,7 @@ const initialProcesses: ProcessDraft[] = [
 
 function runAlgorithm(algorithm: Algorithm, rows: ProcessDraft[], quantum: string): {
   result?: ScheduleResult
+  processes?: ProcessInput[]
   errors: Record<string, string>
 } {
   const processValidation = validateProcesses(rows)
@@ -54,13 +56,18 @@ function runAlgorithm(algorithm: Algorithm, rows: ProcessDraft[], quantum: strin
       return { errors: { quantum: quantumValidation.error } }
     }
 
-    return { result: scheduleRoundRobin(processValidation.processes, quantumValidation.value!), errors: {} }
+    return {
+      result: scheduleRoundRobin(processValidation.processes, quantumValidation.value!),
+      processes: processValidation.processes,
+      errors: {},
+    }
   }
 
   return {
     result: algorithm === 'fcfs'
       ? scheduleFCFS(processValidation.processes)
       : scheduleSJF(processValidation.processes),
+    processes: processValidation.processes,
     errors: {},
   }
 }
@@ -72,6 +79,7 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [csvError, setCsvError] = useState('')
   const [scheduleResult, setScheduleResult] = useState<ScheduleResult | null>(null)
+  const [scheduledProcesses, setScheduledProcesses] = useState<ProcessInput[]>([])
 
   const updateProcess = (index: number, field: keyof ProcessDraft, value: string) => {
     setProcesses((current) => current.map((process, processIndex) => (
@@ -83,17 +91,20 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
       return next
     })
     setScheduleResult(null)
+    setScheduledProcesses([])
   }
 
   const addProcess = () => {
     setProcesses((current) => [...current, { id: '', arrivalTime: '', burstTime: '' }])
     setScheduleResult(null)
+    setScheduledProcesses([])
   }
 
   const removeProcess = (index: number) => {
     setProcesses((current) => current.filter((_, processIndex) => processIndex !== index))
     setErrors({})
     setScheduleResult(null)
+    setScheduledProcesses([])
   }
 
   const importCsv = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -111,12 +122,14 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
     setErrors({})
     setCsvError('')
     setScheduleResult(null)
+    setScheduledProcesses([])
   }
 
   const runSimulation = () => {
     const execution = runAlgorithm(algorithm, processes, quantum)
     setErrors(execution.errors)
     setScheduleResult(execution.result ?? null)
+    setScheduledProcesses(execution.processes ?? [])
   }
 
   return (
@@ -215,6 +228,7 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
                   setQuantum(event.target.value)
                   setErrors((current) => ({ ...current, quantum: '' }))
                   setScheduleResult(null)
+                  setScheduledProcesses([])
                 }}
               />
               {errors.quantum && <small id="quantum-error" className="field-error">{errors.quantum}</small>}
@@ -225,6 +239,9 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
         </aside>
       </section>
 
+      {scheduleResult ? (
+        <ScheduleResults result={scheduleResult} processes={scheduledProcesses} />
+      ) : (
       <section className="results-panel" aria-labelledby="results-heading">
         <div className="results-panel__header">
           <div>
@@ -236,12 +253,11 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
         <div className="gantt-placeholder" aria-label="Gantt chart output pending Phase 4">
           <div className="empty-chart-icon" aria-hidden="true"><span /><span /><span /></div>
           <p>
-            {scheduleResult
-              ? `${scheduleResult.timeline.length} execution segments and ${scheduleResult.metrics.length} process records are ready for Phase 4 visualization.`
-              : 'Enter valid process data and run the policy. The Gantt chart, metrics, and dispatch trace will render in Phase 4.'}
+            Enter valid process data and run the selected policy to generate the execution timeline and performance metrics.
           </p>
         </div>
       </section>
+      )}
     </main>
   )
 }
