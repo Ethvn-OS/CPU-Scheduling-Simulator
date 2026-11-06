@@ -7,9 +7,13 @@ An interactive Operating Systems final project built with React, TypeScript, and
 ```powershell
 npm install
 npm run dev
+npm run demo
 npm run build
 npm run lint
 ```
+
+`npm run demo` prints the scheduling order and calculated metrics for a hard-coded
+set of processes using FCFS, non-preemptive SJF, and Round Robin.
 
 ## Project Phases
 
