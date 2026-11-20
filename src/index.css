@@ -22,7 +22,7 @@ button:focus-visible, input:focus-visible { outline: 3px solid #e8662e; outline-
 .topbar, .workspace-header { display: flex; justify-content: space-between; align-items: center; }
 .topbar { padding: 24px clamp(24px, 6vw, 88px); border-bottom: 1px solid #d4d3c9; }
 .brand { display: inline-flex; align-items: center; gap: 12px; padding: 0; border: 0; color: #20231f; background: transparent; font-weight: 800; letter-spacing: -.03em; }
-.topbar__meta, .eyebrow, .algorithm-card__number, .algorithm-card__type, .status-chip, .run-panel__note { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .02em; }
+.topbar__meta, .eyebrow, .algorithm-card__type, .status-chip, .run-panel__note { font-family: 'DM Mono', monospace; font-size: .72rem; letter-spacing: .02em; }
 .topbar__meta { color: #73766d; }
 .mark { display: inline-flex; gap: 3px; align-items: end; height: 17px; }
 .mark i { display: block; width: 4px; background: #e8662e; }
@@ -98,9 +98,7 @@ h1, h2, p { margin-top: 0; } h1, h2 { letter-spacing: -.055em; } h1 { max-width:
 }
 .algorithm-illustration { display: block; width: min(220px, 100%); height: 100%; color: #51584d; transition: color 180ms ease; }
 .algorithm-illustration__surface { fill: #fffefa; transition: fill 180ms ease; }
-.algorithm-card__meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.algorithm-card__number, .algorithm-card__type { color: #6b7067; transition: color 180ms ease; }
-.algorithm-card__type { padding: 4px 7px; border: 1px solid currentColor; }
+.algorithm-card__type { justify-self: start; margin-bottom: 20px; padding: 4px 7px; border: 1px solid currentColor; color: #6b7067; transition: color 180ms ease; }
 .algorithm-card__name { margin-bottom: 12px; font-size: 1.5rem; font-weight: 800; letter-spacing: -.045em; line-height: 1.05; }
 .algorithm-card__description { color: #6c7068; line-height: 1.55; transition: color 180ms ease; }
 .algorithm-card__action { align-self: end; display: flex; justify-content: space-between; gap: 12px; padding-top: 28px; color: inherit; font-size: .82rem; font-weight: 800; }
@@ -109,7 +107,6 @@ h1, h2, p { margin-top: 0; } h1, h2 { letter-spacing: -.055em; } h1 { max-width:
 .algorithm-card:is(:hover, :focus-visible) .algorithm-card__visual { border-color: #65705e; background: #3b4439; }
 .algorithm-card:is(:hover, :focus-visible) .algorithm-illustration { color: #e2e6dc; }
 .algorithm-card:is(:hover, :focus-visible) .algorithm-illustration__surface { fill: #30382f; }
-.algorithm-card:is(:hover, :focus-visible) .algorithm-card__number,
 .algorithm-card:is(:hover, :focus-visible) .algorithm-card__type,
 .algorithm-card:is(:hover, :focus-visible) .algorithm-card__description { color: #d0d4cd; }
 
