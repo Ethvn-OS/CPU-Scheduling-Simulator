@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AlgorithmCards } from './components/AlgorithmCards'
 import { Mark } from './components/Mark'
+import { Topbar } from './components/Topbar'
 import { Workspace } from './components/Workspace'
 import type { Algorithm, AppScreen } from './types/scheduling'
 import './index.css'
@@ -14,22 +15,14 @@ function App() {
     setScreen('workspace')
   }
 
-  if (screen === 'workspace') {
-    return <Workspace algorithm={algorithm} onChangeAlgorithm={() => setScreen('algorithm-selection')} />
-  }
-
   return (
-    <main className={screen === 'landing' ? 'landing-shell' : 'selection-shell'}>
-      <nav className="topbar" aria-label="Main navigation">
-        <button className="brand" type="button" onClick={() => setScreen('landing')}>
-          <Mark />
-          <span>CPU scheduling lab</span>
-        </button>
-        <span className="topbar__meta">Operating systems · Final project</span>
-      </nav>
+    <div className={screen === 'landing' ? 'landing-shell' : screen === 'algorithm-selection' ? 'selection-shell' : 'workspace-page'}>
+      <Topbar onHome={() => setScreen('landing')} />
 
-      {screen === 'landing' ? (
-        <section className="landing-content">
+      {screen === 'workspace' ? (
+        <Workspace algorithm={algorithm} onChangeAlgorithm={() => setScreen('algorithm-selection')} />
+      ) : screen === 'landing' ? (
+        <main className="landing-content">
           <div className="signal-rail" aria-hidden="true"><span /><span /><span /><span /></div>
           <div className="landing-copy">
             <p className="eyebrow">Interactive CPU scheduling simulator</p>
@@ -48,17 +41,17 @@ function App() {
             <div className="diagram-line diagram-line--out" />
             <div className="diagram-node diagram-node--output"><span>Output</span><b>Timeline + metrics</b></div>
           </div>
-        </section>
+        </main>
       ) : (
-        <section className="selection-content">
+        <main className="selection-content">
           <button className="back-link" type="button" onClick={() => setScreen('landing')}>← Back to overview</button>
           <p className="eyebrow">Step 1 of 2</p>
           <h1>Choose a scheduling policy.</h1>
           <p className="selection-intro">Each policy uses the same process input, but makes a different decision about which process receives the CPU next.</p>
           <AlgorithmCards onSelect={selectAlgorithm} />
-        </section>
+        </main>
       )}
-    </main>
+    </div>
   )
 }
 

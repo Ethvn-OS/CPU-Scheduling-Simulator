@@ -12,6 +12,39 @@ describe('application navigation', () => {
     expect(screen.getByRole('heading', { name: /round robin/i })).toBeTruthy()
     expect(screen.getByRole('spinbutton', { name: /time quantum/i })).toBeTruthy()
   })
+
+  it.each([
+    /first come, first served/i,
+    /shortest job first/i,
+    /round robin/i,
+  ])('keeps shared navigation available throughout the %s workflow', (algorithm) => {
+    render(<App />)
+
+    function expectPageLandmarks() {
+      const navigation = screen.getByRole('navigation', { name: 'Main navigation' })
+      const main = screen.getByRole('main')
+      expect(main.contains(navigation)).toBe(false)
+      expect(within(navigation).getByRole('button', { name: 'CPU scheduling lab' })).toBeTruthy()
+    }
+
+    expectPageLandmarks()
+    fireEvent.click(screen.getByRole('button', { name: /start simulation/i }))
+    expectPageLandmarks()
+    fireEvent.click(screen.getByRole('button', { name: algorithm }))
+    expect(screen.getByRole('heading', { name: algorithm })).toBeTruthy()
+    expectPageLandmarks()
+
+    fireEvent.click(screen.getByRole('button', { name: /change algorithm/i }))
+    expect(screen.getByRole('heading', { name: /choose a scheduling policy/i })).toBeTruthy()
+    expectPageLandmarks()
+    fireEvent.click(screen.getByRole('button', { name: algorithm }))
+
+    const navigation = screen.getByRole('navigation', { name: 'Main navigation' })
+    fireEvent.click(within(navigation).getByRole('button', { name: 'CPU scheduling lab' }))
+    expect(screen.getByRole('heading', { name: /see every decision/i })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /run simulation/i })).toBeNull()
+    expectPageLandmarks()
+  })
 })
 
 function openWorkspace(algorithm: RegExp) {

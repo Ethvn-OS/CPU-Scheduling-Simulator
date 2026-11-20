@@ -16,7 +16,8 @@ button { cursor: pointer; }
 button:disabled { cursor: not-allowed; }
 button:focus-visible, input:focus-visible { outline: 3px solid #e8662e; outline-offset: 3px; }
 
-.landing-shell, .selection-shell, .workspace-shell { min-height: 100svh; background: #f6f4ed; }
+.landing-shell, .selection-shell, .workspace-page { min-height: 100svh; background: #f6f4ed; }
+.workspace-page .workspace-header { padding-top: 32px; }
 .landing-shell { display: grid; grid-template-rows: auto minmax(0, 1fr); }
 .topbar, .workspace-header { display: flex; justify-content: space-between; align-items: center; }
 .topbar { padding: 24px clamp(24px, 6vw, 88px); border-bottom: 1px solid #d4d3c9; }
