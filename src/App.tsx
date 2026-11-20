@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AlgorithmCards } from './components/AlgorithmCards'
-import { Mark } from './components/Mark'
+import { SimulationPreview } from './components/SimulationPreview'
 import { Topbar } from './components/Topbar'
 import { Workspace } from './components/Workspace'
 import type { Algorithm, AppScreen } from './types/scheduling'
@@ -23,23 +23,16 @@ function App() {
         <Workspace algorithm={algorithm} onChangeAlgorithm={() => setScreen('algorithm-selection')} />
       ) : screen === 'landing' ? (
         <main className="landing-content">
-          <div className="signal-rail" aria-hidden="true"><span /><span /><span /><span /></div>
+          <SimulationPreview />
           <div className="landing-copy">
-            <p className="eyebrow">Interactive CPU scheduling simulator</p>
-            <h1>See every decision the scheduler makes.</h1>
+            <h1>CPU Scheduling Simulator</h1>
             <p className="landing-copy__body">
               Configure a ready queue, run a scheduling policy, and inspect its execution timeline and performance metrics.
             </p>
+            <p className="landing-algorithms">FCFS · SJF · Round Robin</p>
             <button className="button button--primary button--start" type="button" onClick={() => setScreen('algorithm-selection')}>
               Start simulation <span>→</span>
             </button>
-          </div>
-          <div className="landing-diagram" aria-label="CPU scheduler flow diagram">
-            <div className="diagram-node diagram-node--queue"><span>Ready queue</span><b>P1 · P2 · P3</b></div>
-            <div className="diagram-line" />
-            <div className="diagram-node diagram-node--cpu"><Mark size="large" /><span>CPU</span></div>
-            <div className="diagram-line diagram-line--out" />
-            <div className="diagram-node diagram-node--output"><span>Output</span><b>Timeline + metrics</b></div>
           </div>
         </main>
       ) : (

@@ -2,11 +2,12 @@ import type { TimelineSegment } from '../types/scheduling'
 
 type GanttChartProps = {
   timeline: TimelineSegment[]
+  compact?: boolean
 }
 
 const colors = ['#496e69', '#bd774e', '#747057', '#6a6481', '#a35d64', '#3f6b8a']
 
-export function GanttChart({ timeline }: GanttChartProps) {
+export function GanttChart({ timeline, compact = false }: GanttChartProps) {
   const processColors = new Map<string, string>()
   let colorIndex = 0
 
@@ -18,11 +19,12 @@ export function GanttChart({ timeline }: GanttChartProps) {
   }
 
   const endTime = timeline[timeline.length - 1]?.endTime ?? 0
+  const minWidth = compact ? '100%' : `${Math.max(100, endTime * 46)}px`
 
   return (
-    <figure className="gantt-chart" aria-label="CPU execution timeline">
+    <figure className={`gantt-chart${compact ? ' gantt-chart--compact' : ''}`} aria-label="CPU execution timeline">
       <div className="gantt-scroll">
-        <div className="gantt-track" style={{ minWidth: `${Math.max(100, endTime * 46)}px` }}>
+        <div className="gantt-track" style={{ minWidth }}>
           {timeline.map((segment, index) => {
             const duration = segment.endTime - segment.startTime
             const label = segment.processId ?? 'Idle'
@@ -43,14 +45,14 @@ export function GanttChart({ timeline }: GanttChartProps) {
             )
           })}
         </div>
-        <div className="gantt-times" style={{ minWidth: `${Math.max(100, endTime * 46)}px` }}>
+        <div className="gantt-times" style={{ minWidth }}>
           {timeline.map((segment, index) => (
             <span key={`${segment.startTime}-${index}`} style={{ flex: segment.endTime - segment.startTime }}>{segment.startTime}</span>
           ))}
           <span className="gantt-times__end">{endTime}</span>
         </div>
       </div>
-      <figcaption>Each block shows one uninterrupted CPU interval. Striped blocks represent CPU idle time.</figcaption>
+      {!compact && <figcaption>Each block shows one uninterrupted CPU interval. Striped blocks represent CPU idle time.</figcaption>}
     </figure>
   )
 }

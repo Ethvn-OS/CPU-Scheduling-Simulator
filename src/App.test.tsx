@@ -41,7 +41,7 @@ describe('application navigation', () => {
 
     const navigation = screen.getByRole('navigation', { name: 'Main navigation' })
     fireEvent.click(within(navigation).getByRole('button', { name: 'CPU scheduling lab' }))
-    expect(screen.getByRole('heading', { name: /see every decision/i })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'CPU Scheduling Simulator' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: /run simulation/i })).toBeNull()
     expectPageLandmarks()
   })
