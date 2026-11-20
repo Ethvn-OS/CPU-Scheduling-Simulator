@@ -1,4 +1,5 @@
 import type { Algorithm } from '../types/scheduling'
+import { AlgorithmIllustration } from './AlgorithmIllustration'
 
 type AlgorithmCardsProps = {
   onSelect: (algorithm: Algorithm) => void
@@ -44,8 +45,13 @@ export function AlgorithmCards({ onSelect }: AlgorithmCardsProps) {
           type="button"
           onClick={() => onSelect(algorithm.id)}
         >
-          <span className="algorithm-card__number">{algorithm.code}</span>
-          <span className="algorithm-card__type">{algorithm.type}</span>
+          <span className="algorithm-card__visual" aria-hidden="true">
+            <AlgorithmIllustration algorithm={algorithm.id} />
+          </span>
+          <span className="algorithm-card__meta">
+            <span className="algorithm-card__number">{algorithm.code}</span>
+            <span className="algorithm-card__type">{algorithm.type}</span>
+          </span>
           <span className="algorithm-card__name">{algorithm.name}</span>
           <span className="algorithm-card__description">{algorithm.description}</span>
           <span className="algorithm-card__action">Configure simulation <b>→</b></span>
