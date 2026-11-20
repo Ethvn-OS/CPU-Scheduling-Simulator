@@ -2,6 +2,12 @@ import { describe, expect, it } from 'vitest'
 import { scheduleRoundRobin } from './roundRobin'
 
 describe('scheduleRoundRobin', () => {
+  it.each([0, -1, 1.5, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1])('rejects an invalid quantum: %s', (quantum) => {
+    expect(() => scheduleRoundRobin([
+      { id: 'P1', arrivalTime: 0, burstTime: 1, inputOrder: 0 },
+    ], quantum)).toThrow(RangeError)
+  })
+
   it('preserves every quantum boundary in the execution timeline', () => {
     const result = scheduleRoundRobin([
       { id: 'P1', arrivalTime: 0, burstTime: 5, inputOrder: 0 },

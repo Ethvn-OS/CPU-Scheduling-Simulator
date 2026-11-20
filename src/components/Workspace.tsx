@@ -8,6 +8,7 @@ import {
   type ProcessDraft,
   validateProcesses,
   validateQuantum,
+  validateRoundRobinWorkload,
 } from '../validation/processValidation'
 import { ScheduleResults } from './ScheduleResults'
 
@@ -54,6 +55,11 @@ function runAlgorithm(algorithm: Algorithm, rows: ProcessDraft[], quantum: strin
     const quantumValidation = validateQuantum(quantum)
     if (quantumValidation.error) {
       return { errors: { quantum: quantumValidation.error } }
+    }
+
+    const workloadError = validateRoundRobinWorkload(processValidation.processes, quantumValidation.value!)
+    if (workloadError) {
+      return { errors: { quantum: workloadError } }
     }
 
     return {

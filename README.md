@@ -9,6 +9,7 @@ npm install
 npm run dev
 npm run build
 npm run lint
+npm test
 ```
 
 ## Project Phases
@@ -31,3 +32,15 @@ npm run lint
 
 - Turnaround time = completion time - arrival time
 - Waiting time = turnaround time - burst time
+
+## Verification and Input Limits
+
+The GUI accepts up to 100 processes, arrival and burst values up to 1,000,000,
+and a combined CPU burst time up to 1,000,000 time units. Values must be safe
+integers; arrivals can be zero, while bursts and the Round Robin quantum must
+be positive. A Round Robin run is limited to 10,000 CPU slices; increase the
+quantum if this limit is exceeded. Validation applies to both typed and
+CSV-imported process data before scheduling begins.
+
+See [VERIFICATION.md](VERIFICATION.md) for automated coverage, hand-calculated
+expected results, and the browser walkthrough for the progress-report screenshot.

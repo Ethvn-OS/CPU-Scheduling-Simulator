@@ -4,8 +4,8 @@ import type { ProcessInput, ScheduleResult, TimelineSegment } from '../types/sch
 type QueuedProcess = ProcessInput & { remainingTime: number }
 
 export function scheduleRoundRobin(processes: ProcessInput[], quantum: number): ScheduleResult {
-  if (!Number.isInteger(quantum) || quantum <= 0) {
-    throw new RangeError('Round Robin quantum must be a positive integer.')
+  if (!Number.isSafeInteger(quantum) || quantum <= 0) {
+    throw new RangeError('Round Robin quantum must be a positive safe integer.')
   }
 
   const orderedProcesses = [...processes].sort(
