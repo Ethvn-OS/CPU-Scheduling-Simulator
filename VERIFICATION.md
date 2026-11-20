@@ -17,7 +17,7 @@ averages from the generated schedules.
 The application integration tests use Vitest, jsdom, and React Testing Library
 to select policies, edit inputs, run simulations, and check chart intervals,
 quantum-expired markers, table values, and rounded averages. They also verify
-CSV import, invalid inputs, stale-result clearing, reruns, and workload rejection.
+invalid inputs, stale-result clearing, reruns, and manual-input workload rejection.
 These tests check DOM output; visual layout and screenshot capture still require
 the browser walkthrough below.
 
@@ -98,7 +98,7 @@ All three have CPU utilization 10/15 * 100 = 66.67% when displayed.
 
 ## Input and workload boundaries
 
-GUI validation is shared by typed input and CSV-imported rows:
+The GUI validates manually entered process rows before scheduling:
 
 - At most 100 processes, with non-empty, unique IDs.
 - Arrival time: an integer from 0 to 1,000,000 inclusive.
@@ -134,9 +134,9 @@ inputs; GUI workload limits are enforced before calling them.
    and a quantum of 0. Each should show a validation error without a new chart.
 10. For a workload check, use bursts 10001, 1, 1 with all arrivals 0 and RR quantum
     1. The run should be rejected. Set quantum to 10000 and verify it succeeds.
-11. Import a valid CSV using the downloadable template, run it, and compare the
-    results with its inputs. Confirm the layout remains usable at your planned
-    presentation window size.
+11. Add a process, fill in its ID, arrival, and burst, then run again. Remove that
+    process and rerun to confirm the output reflects the current rows. Confirm
+    the layout remains usable at your planned presentation window size.
 
 Suggested screenshot caption:
 

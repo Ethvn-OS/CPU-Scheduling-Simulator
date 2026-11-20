@@ -45,9 +45,8 @@ function App() {
       ) : (
         <main className="selection-content">
           <button className="back-link" type="button" onClick={() => setScreen('landing')}>← Back to overview</button>
-          <p className="eyebrow">Step 1 of 2</p>
-          <h1>Choose a scheduling policy.</h1>
-          <p className="selection-intro">Each policy uses the same process input, but makes a different decision about which process receives the CPU next.</p>
+          <h1>Select a CPU Scheduling Algorithm</h1>
+          <p className="selection-intro">Choose an algorithm to explore and see how it schedules processes</p>
           <AlgorithmCards onSelect={selectAlgorithm} />
         </main>
       )}

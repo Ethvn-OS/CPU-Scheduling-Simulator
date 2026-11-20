@@ -35,7 +35,7 @@ describe('application navigation', () => {
     expectPageLandmarks()
 
     fireEvent.click(screen.getByRole('button', { name: /change algorithm/i }))
-    expect(screen.getByRole('heading', { name: /choose a scheduling policy/i })).toBeTruthy()
+    expect(screen.getByRole('heading', { name: 'Select a CPU Scheduling Algorithm' })).toBeTruthy()
     expectPageLandmarks()
     fireEvent.click(screen.getByRole('button', { name: algorithm }))
 
@@ -178,22 +178,6 @@ describe('complete simulation workflow', () => {
     expect(screen.getByTitle('P1: 0 to 1 (1 unit)')).toBeTruthy()
   })
 
-  it('imports CSV rows and schedules their actual values', async () => {
-    openWorkspace(/first come, first served/i)
-    runSimulation()
-    const contents = 'processId,arrivalTime,burstTime\nLater,10,3\nEarly,0,5\n'
-    const file = new File([contents], 'processes.csv', { type: 'text/csv' })
-    fireEvent.change(screen.getByLabelText(/import csv/i), { target: { files: [file] } })
-
-    expect(await screen.findByRole('textbox', { name: 'CPU burst for Early' })).toBeTruthy()
-    expect(screen.queryByRole('figure', { name: /CPU execution timeline/i })).toBeNull()
-    runSimulation()
-    expect(metricRows()).toEqual([
-      ['Later', '10', '3', '13', '3', '0'], ['Early', '0', '5', '5', '5', '0'],
-    ])
-    expect(screen.getByTitle('Idle: 5 to 10 (5 units)')).toBeTruthy()
-  })
-
   it('blocks an oversized Round Robin workload before scheduling and accepts a larger quantum', () => {
     openWorkspace(/round robin/i)
     enterProcesses([['P1', '0', '10001'], ['P2', '0', '1'], ['P3', '0', '1']])
@@ -211,18 +195,25 @@ describe('complete simulation workflow', () => {
     ])
   })
 
-  it('rejects unsafe numeric input and imported workloads that exceed the total burst limit', async () => {
+  it('rejects unsafe numeric input and manually entered workloads that exceed the total burst limit', () => {
     openWorkspace(/first come, first served/i)
     fireEvent.change(screen.getByRole('textbox', { name: 'Arrival time for P1' }), { target: { value: '9007199254740992' } })
     runSimulation()
     expect(screen.getByText('Use an integer within the safe numeric range.')).toBeTruthy()
     expect(screen.queryByRole('figure', { name: /CPU execution timeline/i })).toBeNull()
 
-    const file = new File(['processId,arrivalTime,burstTime\nA,0,1000000\nB,0,1'], 'large.csv', { type: 'text/csv' })
-    fireEvent.change(screen.getByLabelText(/import csv/i), { target: { files: [file] } })
-    await screen.findByRole('textbox', { name: 'CPU burst for B' })
+    enterProcesses([['A', '0', '1000000'], ['B', '0', '1'], ['C', '0', '1']])
     runSimulation()
     expect(screen.getByRole('alert').textContent).toBe('Total CPU burst time must not exceed 1000000 time units.')
     expect(screen.queryByRole('figure', { name: /CPU execution timeline/i })).toBeNull()
+
+    fireEvent.change(screen.getByRole('textbox', { name: 'CPU burst for A' }), { target: { value: '2' } })
+    runSimulation()
+    expect(screen.queryByRole('alert')).toBeNull()
+    expect(metricRows()).toEqual([
+      ['A', '0', '2', '2', '2', '0'],
+      ['B', '0', '1', '3', '3', '2'],
+      ['C', '0', '1', '4', '4', '3'],
+    ])
   })
 })

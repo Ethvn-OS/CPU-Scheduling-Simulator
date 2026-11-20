@@ -1,9 +1,8 @@
-import { useState, type ChangeEvent } from 'react'
+import { useState } from 'react'
 import { scheduleFCFS } from '../algorithms/fcfs'
 import { scheduleRoundRobin } from '../algorithms/roundRobin'
 import { scheduleSJF } from '../algorithms/sjf'
 import type { Algorithm, ProcessInput, ScheduleResult } from '../types/scheduling'
-import { parseProcessCsv } from '../validation/csvParser'
 import {
   type ProcessDraft,
   validateProcesses,
@@ -83,7 +82,6 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
   const [processes, setProcesses] = useState<ProcessDraft[]>(initialProcesses)
   const [quantum, setQuantum] = useState('2')
   const [errors, setErrors] = useState<Record<string, string>>({})
-  const [csvError, setCsvError] = useState('')
   const [scheduleResult, setScheduleResult] = useState<ScheduleResult | null>(null)
   const [scheduledProcesses, setScheduledProcesses] = useState<ProcessInput[]>([])
 
@@ -109,24 +107,6 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
   const removeProcess = (index: number) => {
     setProcesses((current) => current.filter((_, processIndex) => processIndex !== index))
     setErrors({})
-    setScheduleResult(null)
-    setScheduledProcesses([])
-  }
-
-  const importCsv = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    if (!file) return
-
-    const parsed = parseProcessCsv(await file.text())
-    if (parsed.error) {
-      setCsvError(parsed.error)
-      return
-    }
-
-    setProcesses(parsed.rows!)
-    setErrors({})
-    setCsvError('')
     setScheduleResult(null)
     setScheduledProcesses([])
   }
@@ -206,14 +186,6 @@ export function Workspace({ algorithm, onChangeAlgorithm }: WorkspaceProps) {
             ))}
           </div>
           {errors.form && <p className="form-error" role="alert">{errors.form}</p>}
-          <div className="input-panel__footer">
-            <label className="text-button file-button">
-              Import CSV
-              <input type="file" accept=".csv,text/csv" onChange={importCsv} />
-            </label>
-            <a href="/sample-processes.csv" download>Download template</a>
-          </div>
-          {csvError && <p className="form-error" role="alert">{csvError}</p>}
         </div>
 
         <aside className="panel run-panel">

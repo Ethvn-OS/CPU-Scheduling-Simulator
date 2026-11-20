@@ -16,7 +16,7 @@ npm test
 
 1. Foundation and navigable wireframes.
 2. Test-driven FCFS, SJF, and Round Robin scheduling engine.
-3. Process validation and CSV import.
+3. Manual process entry and validation.
 4. Connect inputs and algorithms.
 5. Gantt chart and performance metrics.
 6. Accessibility, responsive polish, and defense preparation.
@@ -39,8 +39,8 @@ The GUI accepts up to 100 processes, arrival and burst values up to 1,000,000,
 and a combined CPU burst time up to 1,000,000 time units. Values must be safe
 integers; arrivals can be zero, while bursts and the Round Robin quantum must
 be positive. A Round Robin run is limited to 10,000 CPU slices; increase the
-quantum if this limit is exceeded. Validation applies to both typed and
-CSV-imported process data before scheduling begins.
+quantum if this limit is exceeded. Enter processes directly in the input table;
+validation runs before scheduling begins.
 
 See [VERIFICATION.md](VERIFICATION.md) for automated coverage, hand-calculated
 expected results, and the browser walkthrough for the progress-report screenshot.
